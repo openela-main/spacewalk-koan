@@ -1,0 +1,1340 @@
+diff --git a/Makefile.defs b/Makefile.defs
+index 94e4c2c..bce7a2c 100644
+--- a/Makefile.defs
++++ b/Makefile.defs
+@@ -1,6 +1,5 @@
+-# Common pathnames and programs for the RHN project
++# Common pathnames and programs for the Spacewalk project
+ #
+-# $Id$
+ 
+ # if not defined, definit as a noop
+ TOP		?= .
+@@ -26,18 +25,15 @@ INSTALL_DIR	= $(INSTALL) -m 755 -d
+ 
+ # This is for the subdir part
+ PYFILES		= $(addsuffix .py,$(FILES))
+-PYCFILES	= $(addsuffix .pyc,$(FILES))
+ 
+ # This is for the subdir part
+ VIRT_PYFILES		= $(addsuffix .py,$(VIRT_FILES))
+-VIRT_PYCFILES	= $(addsuffix .pyc,$(VIRT_FILES))
+-VIRT_PYOFILES	= $(addsuffix .pyo,$(VIRT_FILES))
+ 
+ # what do we need to install and where
+-INSTALL_FILES	+= $(PYFILES) $(PYCFILES)
++INSTALL_FILES	+= $(PYFILES)
+ INSTALL_DEST	?= $(ROOT)/$(SUBDIR)
+ 
+-VIRT_INSTALL_FILES =  $(VIRT_PYFILES) $(VIRT_PYCFILES) $(VIRT_PYOFILES)
++VIRT_INSTALL_FILES =  $(VIRT_PYFILES)
+ 
+ DIRS		+= $(addprefix $(PREFIX), \
+ 			$(sort $(EXTRA_DIRS)) $(INSTALL_DEST))
+@@ -57,12 +53,6 @@ clean ::
+ 	@rm -fv .\#*
+ 	@rm -fv core
+ 
+-# default compile rules
+-%.pyc : %.py
+-	$(TOP)/compile.py $< $@
+-%.pyo : %.py
+-	python -OO $(TOP)/compile.py $< $@
+-
+ # useful macro
+ descend-subdirs = @$(foreach d,$(SUBDIRS), $(MAKE) -C $(d) $@ || exit 1; )
+ 
+@@ -85,7 +75,7 @@ pychecker :: $(PYFILES)
+ 	$(descend-subdirs)
+ 
+ db-checker :: $(PYFILES)
+-	@PYTHONPATH=$(PYTHONPATH) $(TOP)/$(DBCHECKER) $(DBCHECKEROPTS) --db $(DB) $(PYFILES) || :
++	@PYTHONPATH=$(PYTHONPATH) $(TOP)/$(DBCHECKER) $(DBCHECKEROPTS) $(PYFILES) || :
+ 	$(descend-subdirs)
+ 
+ graphviz :: 
+diff --git a/PYTHON-LICENSES.txt b/PYTHON-LICENSES.txt
+deleted file mode 100644
+index cbb5205..0000000
+--- a/PYTHON-LICENSES.txt
++++ /dev/null
+@@ -1,195 +0,0 @@
+-Some portions of this software incorporate material derived from one
+-or more releases of Python and covered by the following copyright
+-notices and licensing terms.
+-
+-
+-
+-Copyright (c) 2001, 2002, 2003 Python Software Foundation; All Rights
+-Reserved
+-
+-1. This LICENSE AGREEMENT is between the Python Software Foundation
+-("PSF"), and the Individual or Organization ("Licensee") accessing and
+-otherwise using Python 2.2.3 software in source or binary form and its
+-associated documentation.
+-
+-2. Subject to the terms and conditions of this License Agreement, PSF
+-hereby grants Licensee a nonexclusive, royalty-free, world-wide
+-license to reproduce, analyze, test, perform and/or display publicly,
+-prepare derivative works, distribute, and otherwise use Python 2.2.3
+-alone or in any derivative version, provided, however, that PSF's
+-License Agreement and PSF's notice of copyright, i.e., "Copyright (c)
+-2001, 2002, 2003 Python Software Foundation; All Rights Reserved" are
+-retained in Python 2.2.3 alone or in any derivative version prepared
+-by Licensee.
+-
+-3. In the event Licensee prepares a derivative work that is based on
+-or incorporates Python 2.2.3 or any part thereof, and wants to make
+-the derivative work available to others as provided herein, then
+-Licensee hereby agrees to include in any such work a brief summary of
+-the changes made to Python 2.2.3.
+-
+-4. PSF is making Python 2.2.3 available to Licensee on an "AS IS"
+-basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.2.3 WILL NOT
+-INFRINGE ANY THIRD PARTY RIGHTS.
+-
+-5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+-2.2.3 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+-A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 2.2.3,
+-OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+-
+-6. This License Agreement will automatically terminate upon a material
+-breach of its terms and conditions.
+-
+-7. Nothing in this License Agreement shall be deemed to create any
+-relationship of agency, partnership, or joint venture between PSF and
+-Licensee.  This License Agreement does not grant permission to use PSF
+-trademarks or trade name in a trademark sense to endorse or promote
+-products or services of Licensee, or any third party.
+-
+-8. By copying, installing or otherwise using Python 2.2.3, Licensee
+-agrees to be bound by the terms and conditions of this License
+-Agreement.
+-
+-
+-
+-BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1
+-
+-1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
+-office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the
+-Individual or Organization ("Licensee") accessing and otherwise using
+-this software in source or binary form and its associated
+-documentation ("the Software").
+-
+-2. Subject to the terms and conditions of this BeOpen Python License
+-Agreement, BeOpen hereby grants Licensee a non-exclusive,
+-royalty-free, world-wide license to reproduce, analyze, test, perform
+-and/or display publicly, prepare derivative works, distribute, and
+-otherwise use the Software alone or in any derivative version,
+-provided, however, that the BeOpen Python License is retained in the
+-Software, alone or in any derivative version prepared by Licensee.
+-
+-3. BeOpen is making the Software available to Licensee on an "AS IS"
+-basis.  BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND
+-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT
+-INFRINGE ANY THIRD PARTY RIGHTS.
+-
+-4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE
+-SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS
+-AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY
+-DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+-
+-5. This License Agreement will automatically terminate upon a material
+-breach of its terms and conditions.
+-
+-6. This License Agreement shall be governed by and interpreted in all
+-respects by the law of the State of California, excluding conflict of
+-law provisions.  Nothing in this License Agreement shall be deemed to
+-create any relationship of agency, partnership, or joint venture
+-between BeOpen and Licensee.  This License Agreement does not grant
+-permission to use BeOpen trademarks or trade names in a trademark
+-sense to endorse or promote products or services of Licensee, or any
+-third party.  As an exception, the "BeOpen Python" logos available at
+-http://www.pythonlabs.com/logos.html may be used according to the
+-permissions granted on that web page.
+-
+-7. By copying, installing or otherwise using the software, Licensee
+-agrees to be bound by the terms and conditions of this License
+-Agreement.
+-
+-
+-
+-Copyright (c) 1995-2001 Corporation for National Research Initiatives;
+-All Rights Reserved
+-
+-1. This LICENSE AGREEMENT is between the Corporation for National
+-Research Initiatives, having an office at 1895 Preston White Drive,
+-Reston, VA 20191 ("CNRI"), and the Individual or Organization
+-("Licensee") accessing and otherwise using Python 1.6.1 software in
+-source or binary form and its associated documentation.
+-
+-2. Subject to the terms and conditions of this License Agreement, CNRI
+-hereby grants Licensee a nonexclusive, royalty-free, world-wide
+-license to reproduce, analyze, test, perform and/or display publicly,
+-prepare derivative works, distribute, and otherwise use Python 1.6.1
+-alone or in any derivative version, provided, however, that CNRI's
+-License Agreement and CNRI's notice of copyright, i.e., "Copyright (c)
+-1995-2001 Corporation for National Research Initiatives; All Rights
+-Reserved" are retained in Python 1.6.1 alone or in any derivative
+-version prepared by Licensee.  Alternately, in lieu of CNRI's License
+-Agreement, Licensee may substitute the following text (omitting the
+-quotes): "Python 1.6.1 is made available subject to the terms and
+-conditions in CNRI's License Agreement.  This Agreement together with
+-Python 1.6.1 may be located on the Internet using the following
+-unique, persistent identifier (known as a handle): 1895.22/1013.  This
+-Agreement may also be obtained from a proxy server on the Internet
+-using the following URL: http://hdl.handle.net/1895.22/1013".
+-
+-3. In the event Licensee prepares a derivative work that is based on
+-or incorporates Python 1.6.1 or any part thereof, and wants to make
+-the derivative work available to others as provided herein, then
+-Licensee hereby agrees to include in any such work a brief summary of
+-the changes made to Python 1.6.1.
+-
+-4. CNRI is making Python 1.6.1 available to Licensee on an "AS IS"
+-basis.  CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND
+-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6.1 WILL NOT
+-INFRINGE ANY THIRD PARTY RIGHTS.
+-
+-5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+-1.6.1 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+-A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 1.6.1,
+-OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+-
+-6. This License Agreement will automatically terminate upon a material
+-breach of its terms and conditions.
+-
+-7. This License Agreement shall be governed by the federal
+-intellectual property law of the United States, including without
+-limitation the federal copyright law, and, to the extent such
+-U.S. federal law does not apply, by the law of the Commonwealth of
+-Virginia, excluding Virginia's conflict of law provisions.
+-Notwithstanding the foregoing, with regard to derivative works based
+-on Python 1.6.1 that incorporate non-separable material that was
+-previously distributed under the GNU General Public License (GPL), the
+-law of the Commonwealth of Virginia shall govern this License
+-Agreement only as to issues arising under or with respect to
+-Paragraphs 4, 5, and 7 of this License Agreement.  Nothing in this
+-License Agreement shall be deemed to create any relationship of
+-agency, partnership, or joint venture between CNRI and Licensee.  This
+-License Agreement does not grant permission to use CNRI trademarks or
+-trade name in a trademark sense to endorse or promote products or
+-services of Licensee, or any third party.
+-
+-8. By clicking on the "ACCEPT" button where indicated, or by copying,
+-installing or otherwise using Python 1.6.1, Licensee agrees to be
+-bound by the terms and conditions of this License Agreement.
+-
+-
+-
+-Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam,
+-The Netherlands.  All rights reserved.
+-
+-Permission to use, copy, modify, and distribute this software and its
+-documentation for any purpose and without fee is hereby granted,
+-provided that the above copyright notice appear in all copies and that
+-both that copyright notice and this permission notice appear in
+-supporting documentation, and that the name of Stichting Mathematisch
+-Centrum or CWI not be used in advertising or publicity pertaining to
+-distribution of the software without specific, written prior
+-permission.
+-
+-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+-THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+-FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+-FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+-OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+-
+diff --git a/actions/Makefile b/actions/Makefile
+index 3ff0cdf..014933d 100644
+--- a/actions/Makefile
++++ b/actions/Makefile
+@@ -1,10 +1,9 @@
+ # Makefile for the backend directory
+ #
+-# $Id$
+ 
+ TOP         = ..
+ ROOT        = /usr/share/rhn
+-SUBDIR      = actions
++SUBDIR      = rhn/actions
+ FILES       = kickstart
+ CAPS        = kickstart
+ CAPS_DIR    = /etc/sysconfig/rhn/clientCaps.d
+diff --git a/actions/kickstart.py b/actions/kickstart.py
+index e89f3eb..abea364 100644
+--- a/actions/kickstart.py
++++ b/actions/kickstart.py
+@@ -1,5 +1,5 @@
+ #
+-# Copyright (c) 2008 Red Hat, Inc.
++# Copyright (c) 2008--2013 Red Hat, Inc.
+ #
+ # This software is licensed to you under the GNU General Public License,
+ # version 2 (GPLv2). There is NO WARRANTY for this software, express or
+@@ -7,10 +7,10 @@
+ # FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+ # along with this software; if not, see
+ # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+-# 
++#
+ # Red Hat trademarks are not licensed under GPLv2. No permission is
+ # granted to use or replicate Red Hat trademarks that are incorporated
+-# in this software or its documentation. 
++# in this software or its documentation.
+ #
+ 
+ import sys
+@@ -26,8 +26,8 @@ __rhnexport__ = [
+     'initiate',
+ ]
+ 
+-def initiate(kickstart_host, base, extra_append, static_device="", system_record="", preserve_files=[]):
+-    log = up2dateLog.initLog() 
++def initiate(kickstart_host, base, extra_append, static_device="", system_record="", preserve_files=[], cache_only=False):
++    log = up2dateLog.initLog()
+     log.log_me("initiating spacewalkkoan kickstart")
+     return spacewalkkoan.initiate(kickstart_host, base, extra_append=extra_append,
+         static_device=static_device, system_record=system_record, preserve_files=preserve_files)
+diff --git a/actions/kickstart_guest.py b/actions/kickstart_guest.py
+index 168ee42..aa718cb 100644
+--- a/actions/kickstart_guest.py
++++ b/actions/kickstart_guest.py
+@@ -1,5 +1,5 @@
+ #
+-# Copyright (c) 2008 Red Hat, Inc.
++# Copyright (c) 2008--2014 Red Hat, Inc.
+ #
+ # This software is licensed to you under the GNU General Public License,
+ # version 2 (GPLv2). There is NO WARRANTY for this software, express or
+@@ -7,10 +7,10 @@
+ # FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+ # along with this software; if not, see
+ # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+-# 
++#
+ # Red Hat trademarks are not licensed under GPLv2. No permission is
+ # granted to use or replicate Red Hat trademarks that are incorporated
+-# in this software or its documentation. 
++# in this software or its documentation.
+ #
+ 
+ import sys
+@@ -19,12 +19,8 @@ rhnpath="/usr/share/rhn"
+ if rhnpath not in sys.path:
+     sys.path.append(rhnpath)
+ 
+-#from rhnkickstart import kickstart_guest
+ from spacewalkkoan import spacewalkkoan
+ 
+-#from rhnkickstart.virtualization_kickstart_exceptions \
+-#    import VirtualizationKickstartException
+-
+ from virtualization.batching_log_notifier import BatchNotifyHandler
+ from virtualization.constants             import PropertyType
+ from virtualization.notification          import Plan,                \
+@@ -39,7 +35,9 @@ __rhnexport__ = [
+ # Public Interface
+ ###############################################################################
+ 
+-def initiate(kickstart_host, cobbler_system_name, virt_type, ks_session_id, name, mem_kb, vcpus, disk_gb, virt_bridge, disk_path, extra_append):
++def initiate(kickstart_host, cobbler_system_name, virt_type, ks_session_id, name, mem_kb, vcpus, disk_gb, virt_bridge, disk_path, extra_append, cache_only=None):
++    if cache_only:
++        return (0, "no-ops for caching", {})
+     error_code = 0
+     status_message = 'Guest kickstart initiated successfully.'
+     error_messages = {}
+@@ -54,7 +52,7 @@ def initiate(kickstart_host, cobbler_system_name, virt_type, ks_session_id, name
+ ###############################################################################
+ 
+ class KickstartLogNotifyHandler(BatchNotifyHandler):
+-    
++
+     def __init__(self, ks_session_id):
+         self.__ks_session_id = ks_session_id
+         self.__plan = None
+diff --git a/compile.py b/compile.py
+deleted file mode 100755
+index 09bb23c..0000000
+--- a/compile.py
++++ /dev/null
+@@ -1,105 +0,0 @@
+-#!/usr/bin/python
+-#
+-# Copyright (c) 2008 Red Hat, Inc.
+-#
+-# This software is licensed to you under the GNU General Public License,
+-# version 2 (GPLv2). There is NO WARRANTY for this software, express or
+-# implied, including the implied warranties of MERCHANTABILITY or FITNESS
+-# FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+-# along with this software; if not, see
+-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+-# 
+-# Red Hat trademarks are not licensed under GPLv2. No permission is
+-# granted to use or replicate Red Hat trademarks that are incorporated
+-# in this software or its documentation. 
+-#
+-#
+-# python compiler. "Borrowed" from Python's py_compile module. As
+-# opposed to the Python one, this script returns error codes when a
+-# compile fails, so it can be used from Makefiles
+-#
+-# $Id$
+-
+-import os
+-import sys
+-import marshal
+-import traceback
+-import string
+-import __builtin__
+-
+-import imp
+-MAGIC = imp.get_magic()
+-
+-if len(sys.argv) != 3:
+-    print "Usage:", sys.argv[0], "infile outfile"
+-    sys.exit(-1)
+-infile = sys.argv[1]
+-outfile = sys.argv[2]
+-
+-def wr_long(f, x):
+-    "Internal; write a 32-bit int to a file in little-endian order."
+-    f.write(chr( x        & 0xff))
+-    f.write(chr((x >> 8)  & 0xff))
+-    f.write(chr((x >> 16) & 0xff))
+-    f.write(chr((x >> 24) & 0xff))
+-
+-def compile(file, cfile=None, dfile=None):
+-    """Byte-compile one Python source file to Python bytecode.
+-
+-    Arguments:
+-
+-    file:  source filename
+-    cfile: target filename; defaults to source with 'c' or 'o' appended
+-           ('c' normally, 'o' in optimizing mode, giving .pyc or .pyo)
+-    dfile: purported filename; defaults to source (this is the filename
+-           that will show up in error messages)
+-
+-    Note that it isn't necessary to byte-compile Python modules for
+-    execution efficiency -- Python itself byte-compiles a module when
+-    it is loaded, and if it can, writes out the bytecode to the
+-    corresponding .pyc (or .pyo) file.
+-
+-    However, if a Python installation is shared between users, it is a
+-    good idea to byte-compile all modules upon installation, since
+-    other users may not be able to write in the source directories,
+-    and thus they won't be able to write the .pyc/.pyo file, and then
+-    they would be byte-compiling every module each time it is loaded.
+-    This can slow down program start-up considerably.
+-
+-    See compileall.py for a script/module that uses this module to
+-    byte-compile all installed files (or all files in selected
+-    directories).
+-    """
+-
+-    f = open(file)
+-    try:
+-        timestamp = long(os.fstat(f.fileno())[8])
+-    except AttributeError:
+-        timestamp = long(os.stat(file)[8])
+-    codestring = f.read()
+-    f.close()
+-    if codestring and codestring[-1] != '\n':
+-        codestring = codestring + '\n'
+-    try:
+-        codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
+-    except SyntaxError, detail:
+-        lines = traceback.format_exception_only(SyntaxError, detail)
+-        sys.stderr.write("%s: Error compiling\n" % file)
+-        for line in lines:
+-            sys.stderr.write(string.replace(line, 'File "<string>"',
+-                                            'File "%s"' % (dfile or file)))
+-        return -1
+-    if not cfile:
+-        cfile = file + (__debug__ and 'c' or 'o')
+-    fc = open(cfile, 'wb')
+-    fc.write('\0\0\0\0')
+-    wr_long(fc, timestamp)
+-    marshal.dump(codeobject, fc)
+-    fc.flush()
+-    fc.seek(0, 0)
+-    fc.write(MAGIC)
+-    fc.close()
+-    return 0
+-
+-if compile(infile, outfile) != 0:
+-    sys.exit(-1)
+diff --git a/merge-rd.sh b/merge-rd.sh
+index cd104fb..a141e13 100644
+--- a/merge-rd.sh
++++ b/merge-rd.sh
+@@ -1,10 +1,12 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # a fairly simple script to merge a given tree into an existing,
+ # bootable ramdisk.  a new ramdisk is created since space may be an
+ # issue (especially if we start letting people put their own files in
+ # here to preserve across the install).
+ 
++set -e
++
+ unset LANG
+ 
+ unset PATH
+@@ -14,14 +16,8 @@ SOURCE_INITRD=$1
+ DEST_INITRD=$2
+ USER_TREE=$3
+ 
+-# Make sure we get the full pathnames.
+-
+-SOURCE_INITRD=`(cd \`dirname $SOURCE_INITRD\` ; pwd)`/`basename $SOURCE_INITRD`
+-DEST_INITRD=`(cd \`dirname $DEST_INITRD\` ; pwd)`/`basename $DEST_INITRD`
+-USER_TREE=`(cd $USER_TREE ; pwd)`
+-
+ fatal() {
+-    err=$1; shift; echo "$*"; exit $err
++    err=$1; shift; >&2 echo "$*"; exit $err
+ }
+ 
+ usage() {
+@@ -49,15 +45,21 @@ get_initrd_type() {
+         INITRD_TYPE=$INITRD_TYPE_CPIO
+     elif file $UNCOMPRESSED_INITRD | grep ext2 > /dev/null 2>&1 ; then
+         INITRD_TYPE=$INITRD_TYPE_EXT2
++    else
++        fatal 9 "Cannot get initrd type"
+     fi
+ 
+-    return $INITRD_TYPE
++    echo $INITRD_TYPE
+ }
+ 
+ uncompress_rd() {
+     local COMPRESSED_INITRD=$1
+     local UNCOMPRESSED_INITRD=$2
+-    zcat $COMPRESSED_INITRD > $UNCOMPRESSED_INITRD
++    if ! zcat $COMPRESSED_INITRD > $UNCOMPRESSED_INITRD 2> /dev/null; then
++        if ! xzcat $COMPRESSED_INITRD > $UNCOMPRESSED_INITRD 2> /dev/null; then
++          fatal 9 "Error uncompressing $COMPRESSED_INITRD"
++        fi
++    fi
+ }
+ 
+ # Expands the provided initrd file into the specified directory.  Returns the
+@@ -66,8 +68,7 @@ expand_rd() {
+     local UNCOMPRESSED_INITRD=$1
+     local TARGET_TREE=$2
+ 
+-    get_initrd_type $UNCOMPRESSED_SOURCE_INITRD
+-    local INITRD_TYPE=$?
++    local INITRD_TYPE=$(get_initrd_type $UNCOMPRESSED_SOURCE_INITRD)
+ 
+     mkdir -p $TARGET_TREE
+ 
+@@ -109,7 +110,7 @@ create_rd() {
+         mkdir $TARGET_MOUNTED
+         mount -o loop $TARGET_INITRD $TARGET_MOUNTED || \
+             fatal 6 "mount of dest image"
+-        tarcp $EXISTING_TREE $TARGET_MOUNTED
++        tarcp $EXISTING_TREE $TARGET_MOUNTED || fatal 9 "Error while extracting archive to final destination"
+         umount $TARGET_MOUNTED
+ 
+     elif [ $INITRD_TYPE -eq $INITRD_TYPE_CPIO ] ; then
+@@ -143,7 +144,11 @@ estimate_merged_rd_size() {
+     local ORIG_SIZE=$(du -s -b $SOURCE_TREE | cut -f 1)
+     local MERGED_SIZE=$(du -s -b $MERGED_TREE | cut -f 1)
+     local DELTA="$(($MERGED_SIZE - $ORIG_SIZE))"
+-    local ORIG_RD_SIZE=$(zcat $SOURCE_INITRD | wc -c)
++    if ! zcat $SOURCE_INITRD >& /dev/null && local ORIG_RD_SIZE=$(zcat $SOURCE_INITRD | wc -c); then
++      if ! xzcat $SOURCE_INITRD >& /dev/null && local ORIG_RD_SIZE=$(xzcat $SOURCE_INITRD | wc -c); then
++        fatal 9 "Unable to estimate merge size"
++      fi
++    fi
+     local MERGED_RD_SIZE="$(( 12 * ($ORIG_RD_SIZE + $DELTA) / 10 ))"
+ 
+     eval "$RESULT_ASSN=\"$MERGED_RD_SIZE\""
+@@ -155,15 +160,25 @@ remove_tree() {
+     # The tree may or may not be mounted, depending on the type of initrd
+     # that was used to create it.
+ 
+-    umount $TREE_TO_REMOVE > /dev/null 2>&1
++    # Force 'true' even when umount exits with an error to not block the
++    # execution of the script (see set -e at the top of the file).
++    # The script forces the umount even when mount has not been used.
++    umount $TREE_TO_REMOVE > /dev/null 2>&1 || true
+     rm -rf $TREE_TO_REMOVE
+ }
+ 
+ ################################ Main #########################################
+ 
+-[ -e "$SOURCE_INITRD" ] || usage
++[ -e "$SOURCE_INITRD" ] || fatal 1 "Cannot find initrd $SOURCE_INITRD"
++[ -d "$(dirname $DEST_INITRD)" ] || fatal 1 "Cannot find final destination dir: $(dirname $DEST_INITRD)"
++[ -d "$USER_TREE" ] || fatal 1 "Cannot find user tree: $USER_TREE"
++
++# Make sure we get the full pathnames.
++
++SOURCE_INITRD=`(cd \`dirname $SOURCE_INITRD\` ; pwd)`/`basename $SOURCE_INITRD`
++DEST_INITRD=`(cd \`dirname $DEST_INITRD\` ; pwd)`/`basename $DEST_INITRD`
++USER_TREE=`(cd $USER_TREE ; pwd)`
+ 
+-[ -d "$USER_TREE" ] || usage
+ 
+ TEMP_DIR=$(mktemp -d /tmp/mergerd.XXXXXX)
+ [ -d $TEMP_DIR ] || fatal 2 "mktemp failed"
+@@ -189,8 +204,7 @@ tarcp $USER_TREE $MERGED_TREE || fatal 5 "copy of merge tree into rd"
+ # Determine the type of the initrd and create a new one.
+ 
+ estimate_merged_rd_size $SOURCE_TREE $MERGED_TREE ESTIMATED_SIZE
+-get_initrd_type $UNCOMPRESSED_SOURCE_INITRD
+-SOURCE_INITRD_TYPE=$?
++SOURCE_INITRD_TYPE=$(get_initrd_type $UNCOMPRESSED_SOURCE_INITRD)
+ create_rd $SOURCE_INITRD_TYPE         \
+           $UNCOMPRESSED_MERGED_INITRD \
+           $MERGED_TREE                \
+diff --git a/spacewalk-koan.spec b/spacewalk-koan.spec
+index 9016d9f..471926a 100644
+--- a/spacewalk-koan.spec
++++ b/spacewalk-koan.spec
+@@ -1,32 +1,53 @@
++%if 0%{?fedora} || 0%{?suse_version} > 1320
++%global build_py3   1
++%global default_py3 1
++%endif
++
++%define pythonX %{?default_py3: python3}%{!?default_py3: python2}
++
+ Summary: Support package for spacewalk koan interaction
+ Name: spacewalk-koan
+-Group: System Environment/Kernel
++Version: 2.8.6
++Release: 2%{?dist}
+ License: GPLv2
+-Source0: https://fedorahosted.org/releases/s/p/spacewalk/%{name}-%{version}.tar.gz
+-Version: 0.1.11
+-Release: 13%{?dist}
+-BuildArch : noarch
+-URL:            https://fedorahosted.org/spacewalk
+-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
++Source0: https://github.com/spacewalkproject/spacewalk/archive/%{name}-%{version}.tar.gz
++URL:            https://github.com/spacewalkproject/spacewalk
+ BuildArch:      noarch
+-BuildRequires:  python
+-Requires:       python >= 1.5
+-Requires:       koan >= 1.4.3
++Requires:       %{pythonX}-%{name} = %{version}-%{release}
++Requires:       koan20
++Requires:       xz
++Conflicts: rhn-kickstart
++Conflicts: rhn-kickstart-common
++Conflicts: rhn-kickstart-virtualization
+ 
+-Provides: rhn.kickstart.boot_image = 5.3.0
+-Provides: rhn-kickstart = 5.3.0
+-Conflicts: rhn-kickstart < 5.3.0
+-
+-# If this is rhel 4 or less we need up2date.
+-%if 0%{?rhel} < 5
+-Requires: up2date
+-%else
+ Requires: rhn-check
+-%endif
+ 
+ %description
+ Support package for spacewalk koan interaction.
+ 
++%package -n python2-%{name}
++Summary: Support package for spacewalk koan interaction
++%{?python_provide:%python_provide python2-%{name}}
++BuildRequires:  python
++Requires:       python
++%if 0%{?suse_version}
++# provide directories for filelist check in OBS
++BuildRequires: rhn-client-tools
++%endif
++%description -n python2-%{name}
++Python 2 specific files for %{name}.
++
++%if 0%{?build_py3}
++%package -n python3-%{name}
++Summary: Support package for spacewalk koan interaction
++%{?python_provide:%python_provide python3-%{name}}
++BuildRequires:  python3
++BuildRequires:  python3-rpm-macros
++Requires:       python3
++%description -n python3-%{name}
++Python 3 specific files for %{name}.
++%endif
++
+ %prep
+ %setup -q
+ 
+@@ -34,94 +55,129 @@ Support package for spacewalk koan interaction.
+ make -f Makefile.spacewalk-koan all
+ 
+ %install
+-rm -rf $RPM_BUILD_ROOT
+-make -f Makefile.spacewalk-koan install PREFIX=$RPM_BUILD_ROOT ROOT=%{_datadir}/rhn/ \
++make -f Makefile.spacewalk-koan install PREFIX=$RPM_BUILD_ROOT ROOT=%{python_sitelib} \
++    MANDIR=%{_mandir}
++
++%if 0%{?build_py3}
++make -f Makefile.spacewalk-koan install PREFIX=$RPM_BUILD_ROOT ROOT=%{python3_sitelib} \
+     MANDIR=%{_mandir}
++%endif
++
++%if 0%{?suse_version}
++%py_compile -O %{buildroot}/%{python_sitelib}
++%if 0%{?build_py3}
++%py3_compile -O %{buildroot}/%{python3_sitelib}
++%endif
++%endif
++
+ 
+ %clean
+-rm -rf $RPM_BUILD_ROOT
+ 
+ %files
+-%defattr(-,root,root,-)
+ %config(noreplace)  %{_sysconfdir}/sysconfig/rhn/clientCaps.d/kickstart
+ %{_sbindir}/*
+-%{_datadir}/rhn/spacewalkkoan/
+-%{_datadir}/rhn/actions/
++
++%files -n python2-%{name}
++%{python_sitelib}/spacewalkkoan/
++%{python_sitelib}/rhn/actions/
++%if 0%{?suse_version}
++%dir %{python_sitelib}/rhn
++%endif
++
++%if 0%{?build_py3}
++%files -n python3-%{name}
++%{python3_sitelib}/spacewalkkoan/
++%{python3_sitelib}/rhn/actions/
++%if 0%{?suse_version}
++%dir %{python3_sitelib}/rhn
++%endif
++%endif
+ 
+ %changelog
+-* Tue Nov 03 2009 Milan Zazrivec <mzazrivec@redhat.com> 0.1.11-13
+-- fixes for bugs 532429, 530553
++* Thu Mar 08 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.6-2
++- rebuild for rhel8
++
++* Fri Feb 09 2018 Michael Mraka <michael.mraka@redhat.com> 2.8.6-1
++- remove install/clean section initial cleanup
++- removed Group from specfile
++- removed BuildRoot from specfiles
++
++* Mon Oct 23 2017 Michael Mraka <michael.mraka@redhat.com> 2.8.5-1
++- spacewalk-koan: add missing directories to filelist on SUSE and build py3 on
++  Tumbleweed
++
++* Wed Oct 18 2017 Jan Dobes 2.8.4-1
++- spacewalk-koan - removing usage of string module not available in Python 3
++
++* Mon Oct 16 2017 Jan Dobes 2.8.3-1
++- upstream koan is not compatible with cobbler20, require our build for now
++
++* Tue Oct 10 2017 Michael Mraka <michael.mraka@redhat.com> 2.8.2-1
++- install files into python_sitelib/python3_sitelib
++- split spacewalk-koan into python2/python3 specific packages
+ 
+-* Thu Jul 16 2009 Brad Buckingham <bbuckingham@redhat.com> 0.1.11-12
+-- 510299 - static ks fix. (paji@redhat.com)
++* Wed Sep 06 2017 Michael Mraka <michael.mraka@redhat.com> 2.8.1-1
++- purged changelog entries for Spacewalk 2.0 and older
++- use standard brp-python-bytecompile
++- Bumping package versions for 2.8.
+ 
+-* Tue Jul 14 2009 Brad Buckingham <bbuckingham@redhat.com> 0.1.11-11
+-- 510299 - Big commit to get static networking to work (paji@redhat.com)
++* Tue Jul 18 2017 Michael Mraka <michael.mraka@redhat.com> 2.7.2-1
++- move version and release before sources
+ 
+-* Thu Jul 02 2009 Brad Buckingham <bbuckingham@redhat.com> 0.1.11-10
+-- 508956 - fixing file preservation to actually use updated initrd.img
+-  (mmccune@gibson.pdx.redhat.com)
++* Mon Jul 17 2017 Jan Dobes 2.7.1-1
++- Updated links to github in spec files
++- Migrating Fedorahosted to GitHub
++- Bumping package versions for 2.7.
+ 
+-* Thu Jun 11 2009 Brad Buckingham <bbuckingham@redhat.com> 0.1.11-9
+-- fixing spacewalk-koan spec file to build for 2.1 properly
+-  (jsherril@redhat.com)
+-- 497571 - switching to python 1.5 requires since we have to support 2.1
+-  (mmccune@gmail.com)
+-- 497571 - switch from True/False to 0/1 to support rhel 2.1 and
+-  (mmccune@gmail.com)
+-- 503996 - Added some information on the error message to the status returned
+-  to the server. (jason.dobies@redhat.com)
++* Mon Sep 26 2016 Jan Dobes 2.6.1-1
++- embed_kickstart was renamed to embed_autoinst in koan upstream
++- Bumping package versions for 2.6.
+ 
+-* Tue May 19 2009 Brad Buckingham <bbuckingham@redhat.com> 0.1.11-8
+-- Package rebuild
++* Wed May 25 2016 Tomas Kasparek <tkasparek@redhat.com> 2.5.2-1
++- updating copyright years
+ 
+-* Thu May 14 2009 Brad Buckingham <bbuckingham@redhat.com> 0.1.11-7
+-- 497424 - Slight redesign of the KS Virt UI to deal with duplicate virt paths
+-  (paji@redhat.com)
++* Tue Apr 26 2016 Gennadii Altukhov <galt@redhat.com> 2.5.1-1
++- Adapt spacewalk-koan for Python 2/3 compatibility
++- Bumping package versions for 2.5.
+ 
+-* Wed May 06 2009 Devan Goodwin <dgoodwin@redhat.com> 0.1.11-6
+-- 497871 - fixing issue where guest provisioning would show as succesfull even
+-  when it had failed (jsherril@redhat.com)
++* Wed Sep 16 2015 Jan Dobes 2.4.2-1
++- 1253464 - switch to KVM if possible
+ 
+-* Thu Apr 23 2009 jesus m. rodriguez <jesusr@redhat.com> 0.1.11-5
+-- 494976 - adding cobbler systme record name usage to reprovisioning (jsherril@redhat.com)
++* Fri May 29 2015 Jan Dobes 2.4.1-1
++- fixing duplicate BuildArch
++- Bumping package versions for 2.4.
+ 
+-* Fri Apr 03 2009 Devan Goodwin <dgoodwin@redhat.com> 0.1.11-4
+-- Rebuild for missing Satellite patch.
++* Thu Mar 19 2015 Grant Gainey 2.3.2-1
++- Updating copyright info for 2015
+ 
+-* Thu Apr 02 2009 jesus m. rodriguez <jesusr@redhat.com> 0.1.11-3
+-- update copyright and licenses (jesusr@redhat.com)
++* Fri Jan 30 2015 Stephen Herr <sherr@redhat.com> 2.3.1-1
++- 1187482 - make file preservation work again with new upstream koan
++- spacewalk-koan: improved merge-rd
++- Bumping package versions for 2.3.
+ 
+-* Thu Mar 26 2009 jesus m. rodriguez <jesusr@redhat.com> 0.1.11-2
+-- rebuild
++* Fri Jul 11 2014 Milan Zazrivec <mzazrivec@redhat.com> 2.2.4-1
++- fix copyright years
+ 
+-* Wed Mar 18 2009 Mike McCune <mmccune@gmail.com> 0.1.11-1
+-- 486186 - Update spacewalk spec files to require koan >= 1.4.3
++* Fri Jun 13 2014 Stephen Herr <sherr@redhat.com> 2.2.3-1
++- 1109276 - make cobbler20 guest kickstart work with new koan
+ 
+-* Thu Feb 26 2009 jesus m. rodriguez <jesusr@redhat.com> 0.1.10-1
+-- 486638- Updated spec to have it conflict with rhn-kickstart rpm instead of obsoleting it.
++* Wed Mar 26 2014 Stephen Herr <sherr@redhat.com> 2.2.2-1
++- 1063409 - guest provisioned on RHEL 7 host have no graphical console
++- Merge pull request #9 from dyordano/1071657
+ 
+-* Wed Feb 18 2009 Dave Parker <dparker@redhat.com> 0.1.9-1
+-- 486186 - Update spacewalk spec files to require cobbler >= 1.4.2
++* Fri Mar 14 2014 Michael Mraka <michael.mraka@redhat.com> 2.2.1-1
++- remove unneded imports
+ 
+-* Tue Feb 10 2009 Mike McCune <mmccune@gmail.com> 0.1.8-1
+-- 484793: Adde a basic setter to get rid of embed_kickstart check on koan
++* Fri Dec 20 2013 Milan Zazrivec <mzazrivec@redhat.com> 2.1.4-1
++- 967503 - use new Koan attribute
+ 
+-* Mon Jan 26 2009 Mike McCune <mmccune@gmail.com> 0.1.7-1
+-- spec file cleanups
++* Mon Oct 14 2013 Michael Mraka <michael.mraka@redhat.com> 2.1.3-1
++- cleaning up old svn Ids
+ 
+-* Tue Jan 13 2009 Mike McCune <mmccune@gmail.com> 0.1.6-1
+-- 461162 - missing var for koan
++* Mon Sep 30 2013 Michael Mraka <michael.mraka@redhat.com> 2.1.2-1
++- removed trailing whitespaces
+ 
+-* Mon Jan 12 2009 Mike McCune <mmccune@gmail.com> 0.1.5-1
+-- 461162 - get the virtualization provisioning tracking system to work with a :virt system record.
+-- 461162 - Quick fix to get spacewalk koan going with a ks....
++* Thu Jul 25 2013 Stephen Herr <sherr@redhat.com> 2.1.1-1
++- 988428 - Mark spacewalk-koan as correctly requiring the xz package
++- Bumping package versions for 2.1.
+ 
+-* Thu Jan 08 2009 Mike McCune <mmccune@gmail.com> 0.1.3-1
+-- minor virt fixes
+-* Tue Dec 23 2008 Mike McCune <mmccune@gmail.com> 0.1.2-1
+-- tagging release with support for virt
+-* Tue Nov 25 2008 Mike McCune - 0.1.1-1
+-- tagging release
+-* Tue Oct 28 2008 Mike McCune - 1.0.0-1
+-- Initial creation.
+diff --git a/spacewalkkoan/__init__.py b/spacewalkkoan/__init__.py
+index fb3600e..6ad3240 100644
+--- a/spacewalkkoan/__init__.py
++++ b/spacewalkkoan/__init__.py
+@@ -1,5 +1,5 @@
+ #
+-# Copyright (c) 2008 Red Hat, Inc.
++# Copyright (c) 2008--2013 Red Hat, Inc.
+ #
+ # This software is licensed to you under the GNU General Public License,
+ # version 2 (GPLv2). There is NO WARRANTY for this software, express or
+@@ -7,9 +7,9 @@
+ # FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+ # along with this software; if not, see
+ # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+-# 
++#
+ # Red Hat trademarks are not licensed under GPLv2. No permission is
+ # granted to use or replicate Red Hat trademarks that are incorporated
+-# in this software or its documentation. 
++# in this software or its documentation.
+ #
+ 
+diff --git a/spacewalkkoan/spacewalkkoan.py b/spacewalkkoan/spacewalkkoan.py
+index 6193617..51621e5 100644
+--- a/spacewalkkoan/spacewalkkoan.py
++++ b/spacewalkkoan/spacewalkkoan.py
+@@ -1,5 +1,5 @@
+ #
+-# Copyright (c) 2008 Red Hat, Inc.
++# Copyright (c) 2008--2016 Red Hat, Inc.
+ #
+ # This software is licensed to you under the GNU General Public License,
+ # version 2 (GPLv2). There is NO WARRANTY for this software, express or
+@@ -7,26 +7,27 @@
+ # FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+ # along with this software; if not, see
+ # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+-# 
++#
+ # Red Hat trademarks are not licensed under GPLv2. No permission is
+ # granted to use or replicate Red Hat trademarks that are incorporated
+-# in this software or its documentation. 
++# in this software or its documentation.
+ #
+ # Kickstart a system using koan.
+ #
+ 
+ import traceback
+ import stat
+-import string
+ import shutil
+ import sys
+-import types
+ import os
+-import subprocess
+ import os.path
+ import tempfile
+-import xmlrpclib
+-import pprint
++
++if sys.version_info[0] == 3:
++    import xmlrpc.client as xmlrpclib
++else:
++    import xmlrpclib
++
+ from koan.app import Koan
+ 
+ SHADOW      = "/tmp/ks-tree-shadow"
+@@ -36,33 +37,64 @@ def execute(cmd):
+     status = os.system(cmd + " > " + tmp)
+     data = open(tmp).readlines()
+     ret = []
+-    for l in data: 
+-        ret.append(string.strip(l))
++    for l in data:
++        ret.append(l.strip())
+     if status == 0:
+         return ret
+-    msg = """Error executing command:\n %s\noutput:\n%s"""
+-    raise Exception(msg % (cmd, string.join(response,"\n")))
++    raise Exception('Error executing command:\n %s\noutput:\n%s' % (cmd, '\n'.join(ret)))
+ 
+ def find_host_name():
+     return execute("hostname")[0]
+ 
+ def find_netmask(device):
+-    return execute("ifconfig %s | perl -lne '/Mask:([\d.]+)/ and print $1'" % device)[0]
++    nm = execute("LANG=C ipcalc -4ms $(ip -4 -o addr show dev %s | awk '{print $4}')|awk -F= '{print $2}'" % device)
++    if nm:
++        return nm[0]
++    else:
++        return ""
++
++def find_netmask6(device):
++    nm6 = execute("LANG=C ip -6 -o addr show dev %s | perl -lne 'print $1 if m!/(.+) scope global!'" % device)
++    if nm6:
++        return nm6[0]
++    else:
++        return ""
+ 
+ def find_ip(device):
+-    return execute("ifconfig %s | perl -lne '/inet addr:([\d.]+)/ and print $1'" % device)[0]
++    ip = execute("LANG=C ip -4 -o addr show dev %s | perl -lne 'print $1 if m!.+\s(.+)/.+ scope global!'" % device)
++    if ip:
++        return ip[0]
++    else:
++        return ""
++
++def find_ip6(device):
++    ip6 = execute("LANG=C ip -6 -o addr show dev %s | perl -lne 'print $1 if m!.+\s(.+)/.+ scope global!'" % device)
++    if ip6:
++        return ip6[0]
++    else:
++        return ""
+ 
+ def find_name_servers():
+-    servers = execute("cat /etc/resolv.conf | perl -lne '/^nameserver\s+(\S+)$/ and print $1'")
++    servers = execute("cat /etc/resolv.conf | perl -lne '/^nameserver\s+(\S+)/ and print $1'")
+     ret = []
+     for s in servers:
+-        if s != "127.0.0.1":
++        if s not in ("127.0.0.1", "::1"):
+             ret.append(s)
+     return ret
+ 
+-def find_gateway():
+-    response = execute("route -n | grep '^0.0.0.0' | awk  '{print $2}'")
+-    return response[0]
++def find_gateway(device):
++    response = execute("ip -f inet route list dev %s|awk '/^default/ {print $3}'" % device)
++    if response:
++        return response[0]
++    else:
++        return ""
++
++def find_gateway6(device):
++    response = execute("ip -f inet6 route list dev %s|awk '/^default/ {print $3}'" % device)
++    if response:
++        return response[0]
++    else:
++        return ""
+ 
+ def getSystemId():
+     path = "/etc/sysconfig/rhn/systemid"
+@@ -70,34 +102,47 @@ def getSystemId():
+         return None
+     return open(path, "r").read()
+ 
++def getInitrdPath():
++    path = '/boot/initrd.img'
++    if os.access(path + "_koan", os.R_OK):
++        return path + "_koan"
++    return path
++
+ def update_static_device_records(kickstart_host, static_device):
+     client = xmlrpclib.Server("https://" + kickstart_host + "/rpc/api")
+-    data = {"gateway": find_gateway(),\
++    data = {"gateway" : find_gateway(static_device),\
+             "nameservers": find_name_servers(),\
+-            "hostname": find_host_name(),\
++            "hostname" : find_host_name(),\
+             "device" :  static_device,\
+             "ip": find_ip(static_device),\
+-            "netmask": find_netmask(static_device)}
+-    msg = """Unable to retrieve the '%s' information needed to update static network configuration information.
+-             Details:\n %s"""
+-    for key, value in data.items():
+-        if not value:
+-            raise Exception(msg % (key, pprint.pformat(data)))
+-    client.system.setup_static_network(getSystemId(), data)
++            "netmask" : find_netmask(static_device)}
++
++    data6 = {"gateway" : find_gateway6(static_device), \
++             "device" : static_device, \
++             "ip" : find_ip6(static_device), \
++             "netmask" : find_netmask6(static_device)}
++
++    api_version = client.api.get_version()
++
++    # Since api_version >= 11.1 we support setup_static_network with IPv6 data
++    if float(api_version) <= 11.00:
++        client.system.setup_static_network(getSystemId(), data)
++    else:
++        client.system.setup_static_network(getSystemId(), data, data6)
+ 
+ def initiate(kickstart_host, base, extra_append, static_device=None, system_record="", preserve_files=[]):
+ 
+     error_messages = {}
+     success = 0
+-    
++
+     # cleanup previous attempt
+     rm_rf(SHADOW)
+     os.mkdir(SHADOW)
+-    
+-    print "Preserve files! : %s"  % preserve_files
+-    
++
++    print("Preserve files! : %s"  % preserve_files)
++
+     try:
+-        if static_device: 
++        if static_device:
+             update_static_device_records(kickstart_host, static_device)
+ 
+         k = Koan()
+@@ -122,35 +167,39 @@ def initiate(kickstart_host, base, extra_append, static_device=None, system_reco
+         k.add_reinstall_entry = None
+         k.kopts_override      = None
+         k.use_kexec           = None
+-        k.embed_kickstart     =  None
++        k.embed_kickstart = k.embed_autoinst =  None
++        if hasattr(k, 'no_copy_default'):
++            k.no_copy_default = 1
++        else: # older koan
++            k.grubby_copy_default = 0
+         if static_device:
+-            k.embed_kickstart = 1
++            k.embed_kickstart = k.embed_autoinst = 1
+         k.run()
+ 
+-    except Exception, e:
++    except Exception:
+         (xa, xb, tb) = sys.exc_info()
+         try:
+-            getattr(e,"from_koan")
+-            error_messages['koan'] = str(e)[1:-1]
+-            print str(e)[1:-1] # nice exception, no traceback needed
++            getattr(xb, "from_koan")
++            error_messages['koan'] = str(xb)[1:-1]
++            print(str(xb)[1:-1])  # nice exception, no traceback needed
+         except:
+-            print xa
+-            print xb
+-            print string.join(traceback.format_list(traceback.extract_tb(tb)))
+-            error_messages['koan'] = string.join(traceback.format_list(traceback.extract_tb(tb)))
++            print(xa)
++            print(xb)
++            print(" ".join(traceback.format_list(traceback.extract_tb(tb))))
++            error_messages['koan'] = " ".join(traceback.format_list(traceback.extract_tb(tb)))
+         return (1, "Kickstart failed. Koan error.", error_messages)
+ 
+     # Now process preserve_files if there are any
+-    initrd = '/boot/initrd.img'
++    initrd = getInitrdPath()
+     if preserve_files:
+         ret = create_new_rd(initrd, preserve_files)
+         if ret:
+             # Error
+             return ret
+         initrd = initrd + ".merged"
+-    
+-    
+-    
++
++
++
+     return (0, "Kickstart initiate succeeded", error_messages)
+ 
+ 
+@@ -161,14 +210,31 @@ class VirtDiskPathExistsError(Exception):
+         return "Virt Disk Path %s already exists on the host system. Please provide another disk path for the virt guest and reschedule your guest kickstart." % self.value
+ 
+ 
++class BlockDeviceNonexistentError(Exception):
++    def __init__(self, device_path):
++        self.value = device_path
++    def __str__(self):
++        return "Block Device Path %s does not exist on the host system. Please create the device for the virtual guest and reschedule your guest kickstart." % self.value
++
++
+ def initiate_guest(kickstart_host, cobbler_system_name, virt_type, name, mem_kb,
+                    vcpus, disk_gb, virt_bridge, disk_path, extra_append, log_notify_handler=None):
+ 
+     error_messages = {}
+     success = 0
+     try:
+-        if os.path.exists(disk_path):
+-            raise VirtDiskPathExistsError(disk_path)
++        if disk_path.startswith('/dev/'):
++            if not os.path.exists(disk_path):
++               raise BlockDeviceNonexistentError(disk_path)
++        else:
++            if os.path.exists(disk_path):
++                raise VirtDiskPathExistsError(disk_path)
++        # Switch to KVM if possible
++        if virt_type == "qemu":
++            if os.path.exists("/dev/kvm"):
++                virt_type = "kvm"
++            else:
++                print("Warning: KVM not available, using QEMU.")
+         k = Koan()
+         k.list_items          = 0
+         k.server              = kickstart_host
+@@ -185,31 +251,42 @@ def initiate_guest(kickstart_host, cobbler_system_name, virt_type, name, mem_kb,
+         k.virt_path           = disk_path
+         k.virt_type           = virt_type
+         k.virt_bridge         = virt_bridge
+-        k.no_gfx              = 1
++        k.no_gfx              = False
+         k.add_reinstall_entry = None
+         k.kopts_override      = None
++        k.virt_auto_boot      = None
++        if hasattr(k, 'no_copy_default'):
++            k.no_copy_default = 1
++        else: # older koan
++            k.grubby_copy_default = 0
++        if hasattr(k, 'virtinstall_wait'):
++            k.virtinstall_wait = 0
+         k.run()
+ 
+         # refresh current virtualization state on the server
+         import virtualization.support
+         virtualization.support.refresh()
+-    except Exception, e:
++    except Exception:
+         (xa, xb, tb) = sys.exc_info()
+-        if  hasattr(e,"from_koan") and len(str(e)) > 1:
+-            error_messages['koan'] = str(e)[1:-1]
+-            print str(e)[1:-1] # nice exception, no traceback needed
++        if str(xb).startswith("The MAC address you entered is already in use"):
++            # I really wish there was a better way to check for this
++            error_messages['koan'] = str(xb)
++            print(str(xb))
++        elif hasattr(xb, "from_koan") and len(str(xb)) > 1:
++            error_messages['koan'] = str(xb)[1:-1]
++            print(str(xb)[1:-1])  # nice exception, no traceback needed
+         else:
+-            print xa
+-            print xb
+-            print string.join(traceback.format_list(traceback.extract_tb(tb)))
+-            error_messages['koan'] = xb.get_error_message() + ' ' + string.join(traceback.format_list(traceback.extract_tb(tb)))
++            print(xa)
++            print(xb)
++            print(" ".join(traceback.format_list(traceback.extract_tb(tb))))
++            error_messages['koan'] = str(xb) + ' ' + " ".join(traceback.format_list(traceback.extract_tb(tb)))
+         return (1, "Virtual kickstart failed. Koan error.", error_messages)
+ 
+     return (0, "Virtual kickstart initiate succeeded", error_messages)
+ 
+ def create_new_rd(initrd, preserve_files=[]):
+     """
+-    Returns None if everything went well, or a tuple 
++    Returns None if everything went well, or a tuple
+     (err_code, err_string, dict) if problems were found
+     """
+     if not initrd:
+@@ -221,9 +298,9 @@ def create_new_rd(initrd, preserve_files=[]):
+     # lame naming below to use /tmp/ks-tres-shadow 2X
+     # but needed to get it here the ks.cfg expects it
+     preserve_shadow = SHADOW + SHADOW
+-    # new FileCopier class handles the dirty work of getting the 
++    # new FileCopier class handles the dirty work of getting the
+     # preserved file set copied w/ all permissions, owners, etc
+-    # kept intact and in the correct location 
++    # kept intact and in the correct location
+     c = FileCopier(preserve_files, preserve_shadow, quota=quota)
+     try:
+         c.copy()
+@@ -257,11 +334,11 @@ def _remove_func(path):
+         # Attempt to remove the file/link/etc
+         os.unlink(path)
+         return
+-        
++
+     # It's a directory!
+     files = os.listdir(path)
+     # We need to add the path since listdir only returns a relative path
+-    files = map(lambda x, p=path: os.path.join(p, x), files)
++    files = list(map(lambda x, p=path: os.path.join(p, x), files))
+     # Recursive call
+     map(_remove_func, files)
+     # After we remove everything from this directory we can also remove
+@@ -270,16 +347,36 @@ def _remove_func(path):
+     return
+ 
+ def my_popen(cmd):
+-    print "CMD: %s " % cmd
+-    c = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
++    print("CMD: %s " % cmd)
++
++    subproc = 1
++    try:
++        import subprocess
++    except ImportError:
++        #RHEL 4 (python 2.3) doesn't have subprocess
++        import popen2
++        subproc = 0
++
++    if subproc:
++        c = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE, close_fds=True, bufsize=-1)
+-    c.stdin.close()
+-    while 1:
+-        status = c.poll()
+-        if status is not None:
+-            # Save the exit code, we still have to read from
+-            # the pipes
+-            return status, c.stdout, c.stderr
++        c.stdin.close()
++        while 1:
++            status = c.poll()
++            if status is not None:
++                # Save the exit code, we still have to read from
++                # the pipes
++                return status, c.stdout, c.stderr
++    else:
++        c = popen2.Popen3(cmd, capturestderr=1, bufsize=-1)
++        c.tochild.close()
++
++        while 1:
++            status = c.poll()
++            if os.WIFEXITED(status):
++                # Save the exit code, we still have to read from
++                # the pipes
++                return os.WEXITSTATUS(status), c.fromchild, c.childerr
+ 
+ def _build_error(status, stdout, stderr):
+     params = {
+@@ -300,13 +397,11 @@ class FileCopier:
+         self.quota = quota
+         self.current_quota = 0
+ 
+-
+     def copy(self):
+         return self._copy(self.files)
+ 
+-
+     def _copy(self, files):
+-        assert(isinstance(files, types.ListType))
++        assert(isinstance(files, list))
+         for f in files:
+             try:
+                 st = os.lstat(f)
+@@ -344,7 +439,7 @@ class FileCopier:
+         # Quota enabled
+         if self.current_quota + file_size > self.quota:
+             raise QuotaExceeded(f)
+-        
++
+ 
+     def _update_quota(self, f, file_size):
+         self.current_quota = self.current_quota + file_size
+@@ -359,10 +454,10 @@ class FileCopier:
+         os.chmod(dest, st[stat.ST_MODE])
+         os.chown(dest, st[stat.ST_UID], st[stat.ST_GID])
+         os.utime(dest, (st[stat.ST_ATIME], st[stat.ST_MTIME]))
+-    
++
+ 
+     def _copy_dir(self, f, st):
+-        files = map(lambda x, d=f: os.path.join(d, x), os.listdir(f))
++        files = list(map(lambda x, d=f: os.path.join(d, x), os.listdir(f)))
+         # Create this directory since it may be empty
+         self._copy_dir_modes(f, self.dest)
+         return self._copy(files)
+@@ -403,7 +498,7 @@ class FileCopier:
+         for d in l:
+             src_dir = os.path.join(src_dir, d)
+             src_st = os.lstat(src_dir)
+-            dest_dir = os.path.join(dest_dir, d) 
++            dest_dir = os.path.join(dest_dir, d)
+             if not os.path.exists(dest_dir):
+                 os.mkdir(dest_dir)
+             os.chmod(dest_dir, src_st[stat.ST_MODE])
