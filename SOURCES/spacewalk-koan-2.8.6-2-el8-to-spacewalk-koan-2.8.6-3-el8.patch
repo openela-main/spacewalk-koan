@@ -1,0 +1,30 @@
+diff --git a/spacewalk-koan.spec b/spacewalk-koan.spec
+index 471926a..b2eeb49 100644
+--- a/spacewalk-koan.spec
++++ b/spacewalk-koan.spec
+@@ -8,13 +8,13 @@
+ Summary: Support package for spacewalk koan interaction
+ Name: spacewalk-koan
+ Version: 2.8.6
+-Release: 2%{?dist}
++Release: 3%{?dist}
+ License: GPLv2
+ Source0: https://github.com/spacewalkproject/spacewalk/archive/%{name}-%{version}.tar.gz
+ URL:            https://github.com/spacewalkproject/spacewalk
+ BuildArch:      noarch
+ Requires:       %{pythonX}-%{name} = %{version}-%{release}
+-Requires:       koan20
++Requires:       koan
+ Requires:       xz
+ Conflicts: rhn-kickstart
+ Conflicts: rhn-kickstart-common
+@@ -94,6 +94,9 @@ make -f Makefile.spacewalk-koan install PREFIX=$RPM_BUILD_ROOT ROOT=%{python3_si
+ %endif
+ 
+ %changelog
++* Wed Mar 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.6-3
++- don't require koan20 (tkasparek@redhat.com)
++
+ * Thu Mar 08 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.6-2
+ - rebuild for rhel8
+ 

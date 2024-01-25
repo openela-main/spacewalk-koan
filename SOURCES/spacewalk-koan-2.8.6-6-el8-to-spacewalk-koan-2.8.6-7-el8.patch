@@ -1,0 +1,32 @@
+diff --git a/spacewalk-koan.spec b/spacewalk-koan.spec
+index b0286c6..683be43 100644
+--- a/spacewalk-koan.spec
++++ b/spacewalk-koan.spec
+@@ -12,7 +12,7 @@
+ Summary: Support package for spacewalk koan interaction
+ Name: spacewalk-koan
+ Version: 2.8.6
+-Release: 6%{?dist}
++Release: 7%{?dist}
+ License: GPLv2
+ Source0: https://github.com/spacewalkproject/spacewalk/archive/%{name}-%{version}.tar.gz
+ URL:            https://github.com/spacewalkproject/spacewalk
+@@ -58,7 +58,7 @@ Summary: Support package for spacewalk koan interaction
+ %{?python_provide:%python_provide python3-%{name}}
+ BuildRequires:  python3
+ BuildRequires:  python3-rpm-macros
+-Requires:       python3
++%{?__python3:Requires: %{__python3}}
+ %description -n python3-%{name}
+ Python 3 specific files for %{name}.
+ %endif
+@@ -113,6 +113,9 @@ make -f Makefile.spacewalk-koan install PREFIX=$RPM_BUILD_ROOT ROOT=%{python3_si
+ %endif
+ 
+ %changelog
++* Mon May 27 2019 Michael Mraka <michael.mraka@redhat.com> 2.8.6-7
++- Require the Python interpreter directly instead of using the package name
++
+ * Tue May 21 2019 Michael Mraka <michael.mraka@redhat.com> 2.8.6-6
+ - Resolves: #1703706 - require commands we use in merge-rd.sh
+ 

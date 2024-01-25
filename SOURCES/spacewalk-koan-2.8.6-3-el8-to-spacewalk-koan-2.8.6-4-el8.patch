@@ -1,0 +1,29 @@
+diff --git a/spacewalk-koan.spec b/spacewalk-koan.spec
+index b2eeb49..a37a6a0 100644
+--- a/spacewalk-koan.spec
++++ b/spacewalk-koan.spec
+@@ -1,4 +1,4 @@
+-%if 0%{?fedora} || 0%{?suse_version} > 1320
++%if 0%{?fedora} || 0%{?suse_version} > 1320 || 0%{?rhel} >= 8
+ %global build_py3   1
+ %global default_py3 1
+ %endif
+@@ -8,7 +8,7 @@
+ Summary: Support package for spacewalk koan interaction
+ Name: spacewalk-koan
+ Version: 2.8.6
+-Release: 3%{?dist}
++Release: 4%{?dist}
+ License: GPLv2
+ Source0: https://github.com/spacewalkproject/spacewalk/archive/%{name}-%{version}.tar.gz
+ URL:            https://github.com/spacewalkproject/spacewalk
+@@ -94,6 +94,9 @@ make -f Makefile.spacewalk-koan install PREFIX=$RPM_BUILD_ROOT ROOT=%{python3_si
+ %endif
+ 
+ %changelog
++* Wed Mar 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.6-4
++- build python3-spacewalk-koan (tkasparek@redhat.com)
++
+ * Wed Mar 14 2018 Tomas Kasparek <tkasparek@redhat.com> 2.8.6-3
+ - don't require koan20 (tkasparek@redhat.com)
+ 
